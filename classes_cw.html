@@ -12,6 +12,7 @@
 </head>
 <body>
     <div id="app">
+
         <header>
             <h1 v-text="sitename"></h1>
             <div>
@@ -29,7 +30,7 @@
 
         <main>
             <div>
-                <div class = "container" v-if="showClasses">
+                <div class="container" v-if="showClasses">
                     <div class ="sort-container">
                         <p><strong>Sort by</strong></p>
                         <label><input type="radio" value="subject" v-model="sortBy"> Subject</label>
@@ -44,15 +45,16 @@
 
                     <div v-for="classItem in sortedClasses" :key="classItem.id" class="lesson-item"> 
                         <div class="lesson-info"> <!--container for text-->
-                        <p><strong>Subject: </strong>{{classItem.subject}}</p>
-                        <p><strong>Location: </strong>{{classItem.location}}</p>
-                        <p><strong>Price: £</strong>{{classItem.price}}</p>
-                        <p><strong>Spaces: </strong>{{classItem.spaces - cartCount(classItem.id)}}</p>
+                            <p><strong>Subject: </strong>{{classItem.subject}}</p>
+                            <p><strong>Location: </strong>{{classItem.location}}</p>
+                            <p><strong>Price: £</strong>{{classItem.price}}</p>
+                            <p><strong>Spaces: </strong>{{classItem.spaces - cartCount(classItem.id)}}</p>
 
                         
-                        <button @click="addToCart(classItem)" :disabled="classItem.spaces === cartCount(classItem.id)">Add to cart</button>
-                        <span v-if="classItem.spaces === cartCount(classItem.id)">No Space Left.</span>
-                        <span v-else-if="classItem.spaces - cartCount(classItem.id) < 5">Only {{classItem.spaces - cartCount(classItem.id)}} left!</span>
+                            <button @click="addToCart(classItem)" :disabled="classItem.spaces === cartCount(classItem.id)">Add to cart</button>
+                            <span v-if="classItem.spaces === cartCount(classItem.id)">No Space Left.</span>
+                            <span v-else-if="classItem.spaces - cartCount(classItem.id) < 5">Only {{classItem.spaces - cartCount(classItem.id)}} left!</span>
+
                         </div>
 
                         <figure> <img v-bind:src="classItem.iconClass" width="100" height="100"></figure>
@@ -72,28 +74,29 @@
 
                         <button @click="removeFromCart(classItem)">Remove</button>
                         </div>
-                        
-                        <figure><img v-bind:src ="classItem.iconClass" width ="100" height="100"></figure>                    </div>
+                            
+                        <figure><img v-bind:src ="classItem.iconClass" width ="100" height="100"></figure>                    
+                    </div>
                 </div>
 
                 <div>
-                     <p>
+                    <p>
                         <strong>Name:</strong>
-                        <input v-model = "order.name"></input>
-                     </p>
-                     <p>
+                        <input v-model = "order.name">
+                    </p>
+
+                    <p>
                         <strong>Number:</strong>
-                        <input v-model = "order.phoneNumber"></input>
-                     </p>
+                        <input v-model = "order.phoneNumber">
+                    </p>
 
-                     <button v-if="order.name !== '' && order.phoneNumber !== ''" @click="submitForm">
+                    <button v-if="order.name !== '' && order.phoneNumber !== ''" @click="submitForm">
                         Check Out
-                     </button>
+                    </button>
 
-                     <button v-else disabled> Check Out</button>
+                    <button v-else disabled> Check Out</button>
                 </div>
-
-                </div>
+            
             </div>
         </main>
     </div>
@@ -102,11 +105,11 @@
         var webstore = new Vue({
             el: '#app',
             data: {
-                sitename: 'After School Classes & Activities',
+                sitename:'After School Classes & Activities',
                 showClasses: true,
                 sortBy: 'price',
                 sortOrder: 'asc',
-                classes: classes,
+                classes:classes,
                 cart:[],
                 order: {
                     name: '',
@@ -139,9 +142,10 @@
                     return count;
                 },
 
-                itemsLeft(classItem){
-                    return classItem.spaces - this.cartCount(classItem.id);
-                },
+                //duplicate for removeFromCart
+                // itemsLeft(classItem){
+                //     return classItem.spaces - this.cartCount(classItem.id);
+                // },
 
                 removeFromCart(classItem){
                     return classItem.spaces - this.cartCount(classItem.id);
@@ -168,8 +172,7 @@
                     return this.cart.length || "";
                 },
 
-            },
-            sortedClasses(){
+                sortedClasses(){
                     let sortedArray=this.classes.slice(); // copy array
 
                     sortedArray.sort((a,b) => {
@@ -199,7 +202,9 @@
                     }, {});
                     return Object.values(cartItems); //converts back to array
                 }
-            });
+            }
+
+        });
 
     </script>
 </body>
