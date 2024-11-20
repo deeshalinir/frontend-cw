@@ -146,7 +146,10 @@
                 },
 
                 removeFromCart(classItem){
-                    return classItem.spaces - this.cartCount(classItem.id);
+                    const index = this.cart.indexOf(classItem.id);
+                    if(index !== -1) {
+                        this.cart.splice(index, 1);
+                    }
                 },
 
                 submitForm(){
