@@ -33,15 +33,19 @@
         <main>
             <div>
                 <div class ="sort-container">
-                    <p><strong>Sort by</strong></p>
-                    <label><input type="radio" value="subject" v-model="sortBy"> Subject</label>
-                    <label><input type="radio" value="location" v-model="sortBy"> Location</label>
-                    <label><input type="radio" value="price" v-model="sortBy"> Price</label>
-                    <label><input type="radio" value="spaces" v-model="sortBy"> Availability</label>
+                    <div class = "sort-selection">
+                        <p><strong>Sort by</strong></p>
+                        <label><input type="radio" value="subject" v-model="sortBy"> Subject</label>
+                        <label><input type="radio" value="location" v-model="sortBy"> Location</label>
+                        <label><input type="radio" value="price" v-model="sortBy"> Price</label>
+                        <label><input type="radio" value="spaces" v-model="sortBy"> Availability</label>
+                    </div>
 
-                    <p><strong>Order</strong></p>
-                    <label><input type="radio" value="acs" v-model="sortOrder"> Ascending</label>
-                    <label><input type="radio" value="desc" v-model="sortOrder"> Descending</label>
+                    <div class="sort-selection">
+                        <p><strong>Order</strong></p>
+                        <label><input type="radio" value="acs" v-model="sortOrder"> Ascending</label>
+                        <label><input type="radio" value="desc" v-model="sortOrder"> Descending</label>
+                    </div>
                 </div>
 
                 <div class="container" v-if="showClasses">
