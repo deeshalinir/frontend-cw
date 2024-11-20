@@ -15,7 +15,8 @@
 <body>
     <div id="app">
         <header>
-            <h1 v-text="sitename"></h1>
+            <h1 v-text="sitename"></h1> <!-- displays the name of the site-->
+            <!--cart button, only enabled when at least one item is in the cart-->
             <div>
                 <button v-if="cartItemCount > 0" @click="toggleView">
                     {{cartItemCount}} <i class="fa-solid fa-cart-shopping"></i>
@@ -30,6 +31,7 @@
         </header>
 
         <main>
+            <!--sorting functionality-->
             <div>
                 <div class ="sort-container">
                     <div class = "sort-selection">
@@ -47,15 +49,17 @@
                     </div>
                 </div>
 
+                <!--list of lessons displayed using v-for-->
                 <div class="container" v-if="showClasses">
                     <div v-for="classItem in sortedClasses" :key="classItem.id" class="lesson-item"> 
                         <div class="lesson-info"> <!--container for text-->
+                            <!--lesson details-->
                             <p><strong>Subject: </strong>{{classItem.subject}}</p>
                             <p><strong>Location: </strong>{{classItem.location}}</p>
                             <p><strong>Price: £</strong>{{classItem.price}}</p>
                             <p><strong>Spaces: </strong>{{classItem.spaces - cartCount(classItem.id)}}</p>
 
-                        
+                            <!--add to cart button, only enabled if space > 0-->
                             <button @click="addToCart(classItem)" :disabled="classItem.spaces === cartCount(classItem.id)">Add to cart</button>
                             <span v-if="classItem.spaces === cartCount(classItem.id)">No Space Left.</span>
                             <span v-else-if="classItem.spaces - cartCount(classItem.id) < 5">Only {{classItem.spaces - cartCount(classItem.id)}} left!</span>
@@ -65,6 +69,7 @@
                     </div>
                 </div>
                 
+                <!--cart pae when showClasses is false-->
                 <div v-else>
                         <div class="checkout-header">
                             <h2><style></style>Welcome to checkout!</h2>
@@ -74,11 +79,13 @@
                         <div class="container">
                             <div v-for="classItem in cartDetails" :key="classItem.id" class="lesson-item">
                                 <div class ="lesson-info">
+                                <!--cart item details-->
                                 <p><strong>Subject: </strong>{{classItem.subject}}</p>
                                 <p><strong>Location: </strong>{{classItem.location}}</p>
                                 <p><strong>Price: £</strong>{{classItem.price}}</p>
                                 <p><strong>Spaces: </strong>{{cartCount(classItem.id)}}</p>
-
+                                
+                                <!--removes item from cart-->
                                 <button @click="removeFromCart(classItem)">Remove</button>
                                 </div>
                                     
@@ -86,7 +93,7 @@
                             </div>
                         </div>
                     
-
+                    <!--check-out name and phone validation-->
                     <div class="checkout-form">
                         <p>
                             <strong>Name:</strong>
@@ -97,7 +104,7 @@
                             <strong>Number:</strong>
                             <input v-model = "order.phoneNumber">
                         </p>
-
+                        <!--checkout button is enabled when name and phone are inputted-->
                         <button v-if="order.name !== '' && order.phoneNumber !== ''" @click="submitForm">
                             Check Out
                         </button>
@@ -117,8 +124,8 @@
                 showClasses: true,
                 sortBy: 'price',
                 sortOrder: 'asc',
-                classes:classes,
-                cart:[],
+                classes:classes, //lessons data imported from classes_cw.js
+                cart:[], //array to hold cart items
                 order: {
                     name: '',
                     phoneNumber: ''
@@ -126,20 +133,24 @@
             },
 
             methods: {
+                // toggles between lessons page and checkout page
                 toggleView(){
                     this.showClasses = !this.showClasses;
                 },
 
+                //adds lesson to the cart if space is available
                 addToCart(classItem){
                     if (classItem.spaces > this.cartCount(classItem.id)){
                         this.cart.push(classItem.id);
                     }
                 },
 
+                //checks if the lesson can be added to the cart (space availability)
                 canAddToCart(classItem){
                     return classItem.spaces > this.cartCount(classItem.id);
                 },
 
+                //counts the number of times a lesson is added to the cart
                 cartCount(id){
                     let count=0;
                     for(let i=0; i<this.cart.length; i++) {
@@ -150,6 +161,7 @@
                     return count;
                 },
 
+                //removes lesson from the cart
                 removeFromCart(classItem){
                     const index = this.cart.indexOf(classItem.id);
                     if(index !== -1) {
@@ -157,9 +169,10 @@
                     }
                 },
 
+                //validates the checkout form and submits the form 
                 submitForm(){
-                    const namePattern = /^[A-Za-z\s]+$/;
-                    const phonePattern = /^\d+$/;
+                    const namePattern = /^[A-Za-z\s]+$/; //name validation
+                    const phonePattern = /^\d+$/; //phone number validation
                     
                     if(this.order.name === '' || this.order.phoneNumber === '') {
                         alert('Please enter your name and phone number');
@@ -174,16 +187,18 @@
             },
 
             computed: {
+                // returns the total number of items in the cart
                 cartItemCount(){
                     return this.cart.length || "";
                 },
-
+                
+                // sorts the classes based on the selected sorting criteria 
                 sortedClasses(){
-                    let sortedArray=this.classes.slice(); // copy array
+                    let sortedArray=this.classes.slice(); // creates a copu of the classes array
 
                     sortedArray.sort((a,b) => {
-                        let modifier = this.sortOrder === 'asc' ? 1 : -1;
-
+                        let modifier = this.sortOrder === 'asc' ? 1 : -1; // determines the sort order (asc/desc)
+                        // numeric sorting for price and spaces, and string sorting for subject and location
                         if (this.sortBy === 'price' || this.sortBy === 'spaces') {
                             return (a[this.sortBy] - b[this.sortBy]) * modifier // numeric sort for price and spaces
                         } else {
@@ -193,20 +208,21 @@
                 return sortedArray;
                 },
                 
+                //returns an array of class items in the cart with quantities selected
                 cartDetails(){
-                    // using map to count the quantities in cart
+                    // reduce cart array to create an object with classItem Isd as keys and their quantities as values
                     let cartItems = this.cart.reduce((acc, id) => {
                         let classItem = this.classes.find(c => c.id === id);
                         if (classItem) {
                             if (!acc[classItem.id]) {
-                                acc[classItem.id]={...classItem, quantity:1};
+                                acc[classItem.id]={...classItem, quantity:1}; // initialise with 1 if not found
                             } else {
-                                acc[classItem.id].quantity++;
+                                acc[classItem.id].quantity++; //increment the quantity if already in the cart
                             }
                         }
                         return acc;
                     }, {});
-                    return Object.values(cartItems); //converts back to array
+                    return Object.values(cartItems); //converts the object back to an array of cart items with quantities
                 }
             }
 
