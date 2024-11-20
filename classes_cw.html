@@ -14,7 +14,6 @@
 </head>
 <body>
     <div id="app">
-
         <header>
             <h1 v-text="sitename"></h1>
             <div>
@@ -67,43 +66,45 @@
                 </div>
                 
                 <div v-else>
-                    <h2>Welcome to checkout!</h2>
-                    <p> Details of the cart</p>
-
-                    <div class="container">
-                        <div v-for="classItem in cartDetails" :key="classItem.id" class="lesson-item">
-                            <div class ="lesson-info">
-                            <p><strong>Subject: </strong>{{classItem.subject}}</p>
-                            <p><strong>Location: </strong>{{classItem.location}}</p>
-                            <p><strong>Price: £</strong>{{classItem.price}}</p>
-                            <p><strong>Spaces: </strong>{{cartCount(classItem.id)}}</p>
-
-                            <button @click="removeFromCart(classItem)">Remove</button>
-                            </div>
-                                
-                            <figure><img v-bind:src ="classItem.iconClass" width ="100" height="100"></figure>                    
+                        <div class="checkout-header">
+                            <h2><style></style>Welcome to checkout!</h2>
+                            <p> Details of the cart</p>
                         </div>
+
+                        <div class="container">
+                            <div v-for="classItem in cartDetails" :key="classItem.id" class="lesson-item">
+                                <div class ="lesson-info">
+                                <p><strong>Subject: </strong>{{classItem.subject}}</p>
+                                <p><strong>Location: </strong>{{classItem.location}}</p>
+                                <p><strong>Price: £</strong>{{classItem.price}}</p>
+                                <p><strong>Spaces: </strong>{{cartCount(classItem.id)}}</p>
+
+                                <button @click="removeFromCart(classItem)">Remove</button>
+                                </div>
+                                    
+                                <figure><img v-bind:src ="classItem.iconClass" width ="100" height="100"></figure>                    
+                            </div>
+                        </div>
+                    
+
+                    <div class="checkout-form">
+                        <p>
+                            <strong>Name:</strong>
+                            <input v-model = "order.name">
+                        </p>
+
+                        <p>
+                            <strong>Number:</strong>
+                            <input v-model = "order.phoneNumber">
+                        </p>
+
+                        <button v-if="order.name !== '' && order.phoneNumber !== ''" @click="submitForm">
+                            Check Out
+                        </button>
+
+                        <button v-else disabled> Check Out</button>
                     </div>
                 </div>
-
-                <div>
-                    <p>
-                        <strong>Name:</strong>
-                        <input v-model = "order.name">
-                    </p>
-
-                    <p>
-                        <strong>Number:</strong>
-                        <input v-model = "order.phoneNumber">
-                    </p>
-
-                    <button v-if="order.name !== '' && order.phoneNumber !== ''" @click="submitForm">
-                        Check Out
-                    </button>
-
-                    <button v-else disabled> Check Out</button>
-                </div>
-            
             </div>
         </main>
     </div>
