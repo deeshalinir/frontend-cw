@@ -6,7 +6,7 @@
 
     <script src="https://unpkg.com/vue@2.7.8/dist/vue.js"></script> <!--link to vue.js-->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"> <!--link to fontawseome-->
-    <script src="classes_cw.js"></script> <!--link to classes_cw.js-->
+    <!--<script src="classes_cw.json"></script>--><!--link to classes_cw.js-->
     <link rel="stylesheet" href="classes_cw.css"> <!--link to classes_cw.css-->
     
     <title>After School Lessons</title>
@@ -65,11 +65,11 @@
                             <span v-else-if="classItem.spaces - cartCount(classItem.id) < 5">Only {{classItem.spaces - cartCount(classItem.id)}} left!</span>
 
                         </div>
-                        <figure> <img v-bind:src="classItem.iconClass" width="100" height="100"></figure>
+                        <figure> <img v-bind:src="'http://localhost:8765/images/' + classItem.iconClass" width="100" height="100"></figure>
                     </div>
                 </div>
                 
-                <!--cart pae when showClasses is false-->
+                <!--cart pale when showClasses is false-->
                 <div v-else>
                         <div class="checkout-header">
                             <h2><style></style>Welcome to checkout!</h2>
@@ -89,7 +89,7 @@
                                 <button @click="removeFromCart(classItem)">Remove</button>
                                 </div>
                                     
-                                <figure><img v-bind:src ="classItem.iconClass" width ="100" height="100"></figure>                    
+                                <figure><img v-bind:src ="'http://localhost:8765/images/' + classItem.iconClass" width ="100" height="100"></figure>                    
                             </div>
                         </div>
                     
@@ -133,7 +133,7 @@
             },
 
             created: function() {
-                fetch("localhost:8765/collectionName")
+                fetch("http://localhost:8765/collectionName")
                 .then(response => response.json())
                 .then(json => {
                     this.classes = json; // Correctly assigns the fetched data to the `classes` array
