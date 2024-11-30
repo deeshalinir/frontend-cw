@@ -63,7 +63,6 @@
                             <button @click="addToCart(classItem)" :disabled="classItem.spaces === cartCount(classItem.id)">Add to cart</button>
                             <span v-if="classItem.spaces === cartCount(classItem.id)">No Space Left.</span>
                             <span v-else-if="classItem.spaces - cartCount(classItem.id) < 5">Only {{classItem.spaces - cartCount(classItem.id)}} left!</span>
-
                         </div>
                         <figure> <img v-bind:src="'http://localhost:8765/images/' + classItem.iconClass" width="100" height="100"></figure>
                     </div>
@@ -72,8 +71,8 @@
                 <!--cart pale when showClasses is false-->
                 <div v-else>
                         <div class="checkout-header">
-                            <h2><style></style>Welcome to checkout!</h2>
-                            <p> Details of the cart</p>
+                            <h2>Welcome to checkout!</h2>
+                            <p>Details of the cart</p>
                         </div>
 
                         <div class="container">
@@ -133,13 +132,13 @@
             },
 
             created: function() {
-                fetch("http://localhost:8765/collectionName")
+            fetch("http://localhost:8765/lessons")
                 .then(response => response.json())
                 .then(json => {
                     this.classes = json; // Correctly assigns the fetched data to the `classes` array
                 })
                 .catch(error => console.error('Error fetching classes:', error));
-            },
+        },
             
             methods: {
                 // toggles between lessons page and checkout page
