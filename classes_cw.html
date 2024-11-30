@@ -189,7 +189,35 @@
                     } else if (!phonePattern.test(this.order.phoneNumber)) {
                         alert('Phone Number must be numbers only.')
                     } else {
-                        alert('Order Submitted, Thank you!')
+                        //data gathered after submitting [lesson id & quanities]
+                        const orderData ={
+                            name: this.order.name,
+                            phoneNumber: this.cartDetails.map(item => ({
+                                lessonID: item.id,
+                                spaces: item.quantity //number of spaces ordered for each lesson
+                            }))
+                        };
+
+                        fetch("http://localhost:8765/order", {
+                            method: "POST",
+                            headers: {"content-type":"application/json"},
+                            body: JSON.stringify(orderData) //this converst the data to json
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if(data.message) {
+                                alert('Order Submitted, Thank you!'); //success message
+                                this.cart = [];//resets the cart after successful submission
+                                this.order.name='';
+                                this.order.phoneNumber='';
+                            } else {
+                                alert('Order Submission Failed.');
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error submitting order:', error);
+                            alert('There was an error submittin the order. Please try again.');
+                        });
                     }
                 }
             },
