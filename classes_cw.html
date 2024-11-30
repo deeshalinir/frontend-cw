@@ -192,7 +192,8 @@
                         //data gathered after submitting [lesson id & quanities]
                         const orderData ={
                             name: this.order.name,
-                            phoneNumber: this.cartDetails.map(item => ({
+                            phoneNumber: this.order.phoneNumber,
+                            lessonIDs: this.cartDetails.map(item => ({
                                 lessonID: item.id,
                                 spaces: item.quantity //number of spaces ordered for each lesson
                             }))
