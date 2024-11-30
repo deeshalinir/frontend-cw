@@ -10,12 +10,19 @@ body {
 
 /* Grid Layout for Content */
 .container {
-    display: grid; /* Creates a grid layout */
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Responsive columns */
-    gap: 1rem; /* Space between grid items */
-    padding: 1rem; /* Padding around the grid */
-    width: 100%; /* Ensures the container spans the full width */
+    display: grid;  /* Creates a grid layout */
+    /* Define responsive columns with a minimum width of 250px and maximum of 1 fraction of available space */
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1rem;      /* Space between grid items */
+    padding: 1rem;  /* Padding around the grid */
+    /* Ensures the container spans the full width and adapts to its content */
+    width: 100%;  
+    /* Set a minimum height to prevent collapsing */
+    min-height: 200px; 
+    /* Border for debugging */
+    border: 1px solid #ccc;
 }
+
 
 /* Card Styles for Lessons */
 .lesson-item {
