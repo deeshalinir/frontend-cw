@@ -196,8 +196,8 @@
                         name: this.order.name,
                         phoneNumber: this.order.phoneNumber,
                         lessonIDs: this.cartDetails.map(item => ({
-                        lessonID: item.id,
-                        spaces: item.quantity //number of spaces ordered for each lesson
+                            lessonID: item.id,
+                            spaces: item.quantity //number of spaces ordered for each lesson
                         }))
                     };
 
@@ -214,7 +214,7 @@
                         alert('Order Submitted, Thank you!'); //success message
 
                         //updates available spaces for each lesson
-                        for (const item of this.cartDetails) {
+                        for (const item of orderData.lessonIDs) {
                             await this.updateLessonSpaces(item.lessonID, item.spaces);
                         }
 
@@ -274,7 +274,10 @@
                 
                 //returns an array of class items in the cart with quantities selected
                 cartDetails(){
-                    // reduce cart array to create an object with classItem Isd as keys and their quantities as values
+                    
+                    if (!this.cart.length || !this.classes.length) return []; //this ensures that cart and classes are available
+                    
+                    // reduce cart array to count quantities and map to class details
                     let cartItems = this.cart.reduce((acc, id) => {
                         let classItem = this.classes.find(c => c.id === id);
                         if (classItem) {
@@ -286,6 +289,7 @@
                         }
                         return acc;
                     }, {});
+                    
                     return Object.values(cartItems); //converts the object back to an array of cart items with quantities
                 }
             }
