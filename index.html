@@ -211,14 +211,20 @@
                         body: JSON.stringify(orderData) //converts the data to JSON
                         });
 
+                        console.log(orderData.lessonIDs[0].spaces);
+
                         const data = await response.json();
                         if (response.ok) {
                         alert('Order Submitted, Thank you!'); //success message
 
                         //updates available spaces for each lesson
                         for (const item of orderData.lessonIDs) {
+                            let index = this.cart.indexOf(item.lessonID);
+                            let oldSpaces = this.cart[index].spaces;
+                            let newSpaces = oldSpaces - item.spaces;
+
                             try{
-                                await this.updateLessonSpaces(item.lessonID, item.spaces);
+                                await this.updateLessonSpaces(item.lessonID, newSpaces);
                             } catch (error) {
                                 console.error(`Failed to update spaces for lesson ${item.lessonID}:`, error);
                             }  
@@ -241,27 +247,27 @@
                 //method to update available spaces for each lesson using PUT
                 async updateLessonSpaces(lessonID, quantity) {
                     try {
-                        //fetches the current lesson details to get the current available spaces
-                        const lessonResponse = await fetch(`https://backend-cw-u01w.onrender.com/lesson/${lessonID}`);
-                        if (!lessonResponse.ok){
-                            console.error(`Failed to fetch lesson ${lessonID}`);
-                            return
-                        }
+                        // //fetches the current lesson details to get the current available spaces
+                        // const lessonResponse = await fetch(`https://backend-cw-u01w.onrender.com/lesson/${lessonID}`);
+                        // if (!lessonResponse.ok){
+                        //     console.error(`Failed to fetch lesson ${lessonID}`);
+                        //     return
+                        // }
 
-                        const lessonData = await lessonResponse.json();
-                        const updatedSpaces = lessonData.availableSpaces - quantity;
+                        // const lessonData = await lessonResponse.json();
+                        // const updatedSpaces = lessonData.availableSpaces - quantity;
 
-                        //ensure updatedSpaces is not negative
-                        if (updatedSpaces <0) {
-                            console.error(`Not enough spaces available for lesson ${lessonID}`);
-                            return;
-                        }
+                        // //ensure updatedSpaces is not negative
+                        // if (updatedSpaces <0) {
+                        //     console.error(`Not enough spaces available for lesson ${lessonID}`);
+                        //     return;
+                        // }
 
                         //update the lesson with the new availableSpaces
                         const response = await fetch(`https://backend-cw-u01w.onrender.com/lesson/${lessonID}`, {
                             method: "PUT",
                             headers: { "Content-Type": "application/json" },
-                            body: JSON.stringify({ availableSpaces: updatedSpaces }) //updates with the new spaces
+                            body: JSON.stringify({ "spaces" : quantity }) //updates with the new spaces
                         });
 
                     if (!response.ok) {
