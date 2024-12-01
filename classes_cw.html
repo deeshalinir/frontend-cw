@@ -177,51 +177,78 @@
                     }
                 },
 
-                //validates the checkout form and submits the form 
-                submitForm(){
+
+                //validates the checkout form and submits the form
+                async submitForm() {
                     const namePattern = /^[A-Za-z\s]+$/; //name validation
                     const phonePattern = /^\d+$/; //phone number validation
-                    
-                    if(this.order.name === '' || this.order.phoneNumber === '') {
-                        alert('Please enter your name and phone number');
-                    } else if (!namePattern.test(this.order.name)) {
-                        alert('Name must be letters only.')
-                    } else if (!phonePattern.test(this.order.phoneNumber)) {
-                        alert('Phone Number must be numbers only.')
-                    } else {
-                        //data gathered after submitting [lesson id & quanities]
-                        const orderData ={
-                            name: this.order.name,
-                            phoneNumber: this.order.phoneNumber,
-                            lessonIDs: this.cartDetails.map(item => ({
-                                lessonID: item.id,
-                                spaces: item.quantity //number of spaces ordered for each lesson
-                            }))
-                        };
 
-                        fetch("http://localhost:8765/order", {
-                            method: "POST",
-                            headers: {"content-type":"application/json"},
-                            body: JSON.stringify(orderData) //this converst the data to json
-                        })
-                        .then(response => response.json())
-                        .then(data => {
-                            if(data.message) {
-                                alert('Order Submitted, Thank you!'); //success message
-                                this.cart = [];//resets the cart after successful submission
-                                this.order.name='';
-                                this.order.phoneNumber='';
-                            } else {
-                                alert('Order Submission Failed.');
-                            }
-                        })
-                        .catch(error => {
-                            console.error('Error submitting order:', error);
-                            alert('There was an error submittin the order. Please try again.');
+                    if (this.order.name === '' || this.order.phoneNumber === '') {
+                    alert('Please enter your name and phone number');
+                    } else if (!namePattern.test(this.order.name)) {
+                    alert('Name must be letters only.');
+                    } else if (!phonePattern.test(this.order.phoneNumber)) {
+                    alert('Phone Number must be numbers only.');
+                    } else {
+
+                    //data gathered after submitting (lesson ID & quantities)
+                    const orderData = {
+                        name: this.order.name,
+                        phoneNumber: this.order.phoneNumber,
+                        lessonIDs: this.cartDetails.map(item => ({
+                        lessonID: item.id,
+                        spaces: item.quantity //number of spaces ordered for each lesson
+                        }))
+                    };
+
+                    try {
+                        //submits the order
+                        const response = await fetch("http://localhost:8765/order", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify(orderData) //converts the data to JSON
                         });
+
+                        const data = await response.json();
+                        if (response.ok) {
+                        alert('Order Submitted, Thank you!'); //success message
+
+                        //updates available spaces for each lesson
+                        for (const item of this.cartDetails) {
+                            await this.updateLessonSpaces(item.lessonID, item.spaces);
+                        }
+
+                        //resets the cart and form
+                        this.cartDetails = [];
+                        this.order.name = '';
+                        this.order.phoneNumber = '';
+                        } else {
+                        alert('Order Submission Failed.');
+                        }
+                    } catch (error) {
+                        console.error('Error submitting order:', error);
+                        alert('There was an error submitting the order. Please try again.');
+                    }
+                    }
+                },
+
+                //method to update available spaces for each lesson using PUT
+                async updateLessonSpaces(lessonID, quantity) {
+                    try {
+                    const response = await fetch(`http://localhost:8765/lesson/${lessonID}`, {
+                        method: "PUT",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ availableSpaces: quantity }) //updates with the new spaces
+                    });
+
+                    if (!response.ok) {
+                        console.error(`Failed to update spaces for lesson ${lessonID}`);
+                    }
+                    } catch (error) {
+                    console.error(`Error updating lesson ${lessonID}:`, error);
                     }
                 }
-            },
+                },
 
             computed: {
                 // returns the total number of items in the cart
