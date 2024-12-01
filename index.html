@@ -62,7 +62,7 @@
                             <p><strong>Spaces: </strong>{{classItem.spaces - cartCount(classItem.id)}}</p>
 
                             <!--add to cart button, only enabled if space > 0-->
-                            <button @click="addToCart(classItem)" :disabled="classItem.spaces === cartCount(classItem.id)">Add to cart</button>
+                            <button @click="addToCart(classItem)" :disabled="classItem.spaces == 0 ? true : false">Add to cart</button>
                             <span v-if="classItem.spaces === cartCount(classItem.id)">No Space Left.</span>
                             <span v-else-if="classItem.spaces - cartCount(classItem.id) < 5">Only {{classItem.spaces - cartCount(classItem.id)}} left!</span>
                         </div>
@@ -219,9 +219,14 @@
 
                         //updates available spaces for each lesson
                         for (const item of orderData.lessonIDs) {
-                            let index = this.cart.indexOf(item.lessonID);
-                            let oldSpaces = this.cart[index].spaces;
+                            let classItem = this.classes.find(c => c.id === item.lessonID);
+                            //let index = this.classes.indexOf(item.lessonID);
+                            //console.log("The index of the lesson is: ", index);
+                            let oldSpaces = classItem.spaces;
+                            console.log("The olspac of the lesson is: ", oldSpaces);
                             let newSpaces = oldSpaces - item.spaces;
+                            console.log("The nespac of the lesson is: ", newSpaces);
+                            
 
                             try{
                                 await this.updateLessonSpaces(item.lessonID, newSpaces);
